@@ -104,7 +104,7 @@ router.route('/movie')
                 res.json({message: "Movie of same name already in DB"});
             }
             else if (movie.actors.length !== 3){
-                res.json({message: "Less than 3 actors"});
+                res.json({message: "Less than 3 actors", error: err});
             }
             else{
                 movie.save(function (err) {
@@ -127,13 +127,6 @@ router.route('/movie')
         })
         }
     )
-
-    .put(authJwtController.isAuthenticated, function(req, movie) {
-            movie = movie.status(200);
-            movie.json(
-                {status: '200', message: 'movie updated', headers: req.headers, query: req.query, env: process.env.UNIQUE_KEY});
-        }
-    )
     .delete(authController.isAuthenticated, function(req, res) {
             Movie.deleteOne({title: req.body.title}, function (err, movie) {
                 if (err) {
@@ -154,6 +147,30 @@ router.route('/movie/:title')
             res.json(movie);
         })
     });
+
+// PUT movie (update existing movie)
+router.route('/movie/:title')
+    .put(authJwtController.isAuthenticated, function (req, res) {
+        var conditions = {title: req.params.title};
+        Movie.findOne({title: req.body.title}, function(err, found) {
+            if (err) {
+                res.json({message: "ERROR: \n", error: err});
+            }
+                //if (found) {
+            //  res.json({message: "Movie already exist"});
+            else {
+                Movie.updateOne(conditions, req.body)
+                    .then(mov => {
+                        if (!mov) {
+                            return res.status(400).end();
+                        }
+                        return res.status(200).json({msg: "Successfully updated movie in DB"})
+                    })
+                    .catch(err => console.log(err))
+            }
+        })
+    });
+
 // all other requests
 router.all('*', function(req, res) {
     res.json({ error: 'HTTP Method Not Supported' });
