@@ -14,10 +14,8 @@ mongoose.set('useCreateIndex', true);
 //user schema
 var MovieSchema = new Schema({
     title: { type: String, required: true},
-    yearReleased: { type: String, required: true},
-    genre: { type: String, default: 'Drama',
-        enum:['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy',
-            'Horror', 'Mystery', 'Thriller', 'Western']},
+    year: { type: String, required: true},
+    genre: { type: String, default: 'Drama'},
     actors: { type: [{actorName: String, characterName: String}], required: true }
 });
 
