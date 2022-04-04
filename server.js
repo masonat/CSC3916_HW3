@@ -96,21 +96,20 @@ router.route('/movie')
         movie.genre = req.body.genre;
         movie.actors = req.body.actors;
 
-        //check if movies exist, maybe error or it has < 3 errors.
         Movie.findOne({title: req.body.title}, function(err, found){
             if(err){
-                res.json({message: "Read error \n", error: err});
+                res.json({message: "ERROR:", error: err});
             }
             else if(found){
-                res.json({message: "Movie already exist"});
+                res.json({message: "Movie of same name already in DB"});
             }
-            else if (movie.actors.length < 3){
-                res.json({message: "Need at least 3 actors"});
+            else if (movie.actors.length !== 3){
+                res.json({message: "Less than 3 actors"});
             }
             else{
                 movie.save(function (err) {
                     if(err){
-                        res.json({message: "Something went wrong, check your fields\n", error: err});
+                        res.json({message: "ERROR: ", error: err});
                     }
                     else{
                         res.json({message: "Movie is saved to DB"});
@@ -129,9 +128,9 @@ router.route('/movie')
         }
     )
 
-    .put(authJwtController.isAuthenticated, function(req, res) {
-            res = res.status(200);
-            res.json(
+    .put(authJwtController.isAuthenticated, function(req, movie) {
+            movie = movie.status(200);
+            movie.json(
                 {status: '200', message: 'movie updated', headers: req.headers, query: req.query, env: process.env.UNIQUE_KEY});
         }
     )
@@ -139,8 +138,8 @@ router.route('/movie')
             Movie.deleteOne({title: req.body.title}, function (err, movie) {
                 if (err) {
                     res.status(400).json({message: "ERROR: ", msg: err})
-                } else if (movie == null) {
-                    res.json({msg: "Move could not be found"})
+                } else if (movie == null) { // returned null cursor
+                    res.json({msg: "Movie could not be found"})
                 } else
                     res.json({msg: "Successfully removed movie from DB"})
             })
