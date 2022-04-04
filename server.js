@@ -92,11 +92,11 @@ router.route('/movie')
         console.log(req.body);
         var movie = new Movie();
         movie.title = req.body.title;
-        movie.yearReleased = req.body.yearReleased;
+        movie.year = req.body.year;
         movie.genre = req.body.genre;
         movie.actors = req.body.actors;
 
-        //check if movies exist, maybe error or it has <3 errors.
+        //check if movies exist, maybe error or it has < 3 errors.
         Movie.findOne({title: req.body.title}, function(err, found){
             if(err){
                 res.json({message: "Read error \n", error: err});
