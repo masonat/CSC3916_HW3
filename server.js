@@ -90,7 +90,7 @@ router.post('/signin', function (req, res) {
 router.route('/movie')
     .post(authJwtController.isAuthenticated, function(req, res) { // add movie
             if (!req.body.title || !req.body.password || !req.body.genre || !req.body.actors.length < 3) {
-                res.json({success: false, msg: 'Please include all required fields at 3 actors'})
+                res.json({success: false, msg: 'Please include all required fields and 3 actors'})
             }
             else {
                 var movie = new Movie();
@@ -108,6 +108,7 @@ router.route('/movie')
             }
         }
     )
+    // get ALL movies
     .get(function(req, res) {
         Movie.find(function (err, result) {
             if(err) res.json({message: "ERROR: ", error: err});
@@ -116,6 +117,7 @@ router.route('/movie')
         })
         }
     )
+
     .put(authJwtController.isAuthenticated, function(req, res) {
             res = res.status(200);
             res.json(
@@ -123,12 +125,25 @@ router.route('/movie')
         }
     )
     .delete(authController.isAuthenticated, function(req, res) {
-            res = res.status(200);
-            res.json(
-                {status: '200', message: 'movie deleted', headers: req.headers, query: req.query, env: process.env.UNIQUE_KEY});
+            Movie.deleteOne({title: req.body.title}, function (err, movie) {
+                if (err) {
+                    res.status(400).json({message: "ERROR: ", msg: err})
+                } else if (movie == null) {
+                    res.json({msg: "Move could not be found"})
+                } else
+                    res.json({msg: "Successfully removed movie from DB"})
+            })
         }
     );
-
+// get specific movie
+router.route('/movie/:title')
+    .get(authJwtController.isAuthenticated, function (req, res) {
+        var id = req.params.title;
+        Movie.findOne({ name: 'Titanic'}, function (err, movie) {
+            if (err) res.send(err);
+            res.json(movie);
+        })
+    });
 // all other requests
 router.all('*', function(req, res) {
     res.json({ error: 'HTTP Method Not Supported' });

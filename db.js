@@ -1,6 +1,3 @@
-/**
- * Created by shawnmccarthy on 1/22/17.
- */
 'use strict;';
 //Include crypto to generate the movie id
 var crypto = require('crypto');
