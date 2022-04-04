@@ -88,26 +88,37 @@ router.post('/signin', function (req, res) {
 
 /* starting my code for /movie */
 router.route('/movie')
-    .post(authJwtController.isAuthenticated, function(req, res) { // add movie
-            if (!req.body.title || !req.body.password || !req.body.genre) {
-                res.json({success: false, msg: 'Please include all required fields'})
-            }
-            else {
-                var movie = new Movie();
-                movie.title = req.body.title;
-                movie.year = req.body.year;
-                movie.genre = req.body.genre;
-                movie.actors = req.body.actors;
-                user.save(function(err){
-                    if (err) {
-                        return res.json(err);
-                    }
-                    res.json({success: true, msg: 'Successfully added movie to DB'})
-                });
+    .post(authJwtController.isAuthenticated, function (req, res) {
+        console.log(req.body);
+        var movie = new Movie();
+        movie.title = req.body.title;
+        movie.yearReleased = req.body.yearReleased;
+        movie.genre = req.body.genre;
+        movie.actors = req.body.actors;
 
+        //check if movies exist, maybe error or it has <3 errors.
+        Movie.findOne({title: req.body.title}, function(err, found){
+            if(err){
+                res.json({message: "Read error \n", error: err});
             }
-        }
-    )
+            else if(found){
+                res.json({message: "Movie already exist"});
+            }
+            else if (movie.actors.length < 3){
+                res.json({message: "Need at least 3 actors"});
+            }
+            else{
+                movie.save(function (err) {
+                    if(err){
+                        res.json({message: "Something went wrong, check your fields\n", error: err});
+                    }
+                    else{
+                        res.json({message: "Movie is saved to DB"});
+                    }
+                })
+            }
+        });
+    })
     // get ALL movies
     .get(function(req, res) {
         Movie.find(function (err, result) {
