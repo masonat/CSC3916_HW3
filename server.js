@@ -89,8 +89,8 @@ router.post('/signin', function (req, res) {
 /* starting my code for /movie */
 router.route('/movie')
     .post(authJwtController.isAuthenticated, function(req, res) { // add movie
-            if (!req.body.title || !req.body.password || !req.body.genre || !req.body.actors.length < 3) {
-                res.json({success: false, msg: 'Please include all required fields and 3 actors'})
+            if (!req.body.title || !req.body.password || !req.body.genre) {
+                res.json({success: false, msg: 'Please include all required fields'})
             }
             else {
                 var movie = new Movie();
@@ -137,7 +137,7 @@ router.route('/movie')
     );
 // get specific movie
 router.route('/movie/:title')
-    .get(authJwtController.isAuthenticated, function (req, res) {
+    .get(function (req, res) {
         var id = req.params.title;
         Movie.findOne({ name: 'Titanic'}, function (err, movie) {
             if (err) res.send(err);
