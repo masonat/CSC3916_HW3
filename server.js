@@ -88,7 +88,7 @@ router.post('/signin', function (req, res) {
 
 /* starting my code for /movie */
 router.route('/movie')
-    .post(function(req, res) { // add movie
+    .post(authJwtController.isAuthenticated, function(req, res) { // add movie
             if (!req.body.title || !req.body.password || !req.body.genre || !req.body.actors.length < 3) {
                 res.json({success: false, msg: 'Please include all required fields at 3 actors'})
             }
@@ -109,9 +109,11 @@ router.route('/movie')
         }
     )
     .get(function(req, res) {
-            res = res.status(200);
-            res.json(
-                {status: '200', message: 'GET movies', headers: req.headers, query: req.query, env: process.env.UNIQUE_KEY});
+        Movie.find(function (err, result) {
+            if(err) res.json({message: "ERROR: ", error: err});
+            console.log(result.title)
+            res.json(result);
+        })
         }
     )
     .put(authJwtController.isAuthenticated, function(req, res) {
