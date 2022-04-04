@@ -12,6 +12,7 @@ var authJwtController = require('./auth_jwt');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
 var User = require('./Users');
+const Movie = require("./Movies");
 
 var app = express();
 app.use(cors());
@@ -84,6 +85,53 @@ router.post('/signin', function (req, res) {
         })
     })
 });
+
+/* starting my code for /movie */
+router.route('/movie')
+    .post(function(req, res) { // add movie
+            if (!req.body.title || !req.body.password || !req.body.genre || !req.body.actors.length < 3) {
+                res.json({success: false, msg: 'Please include all required fields at 3 actors'})
+            }
+            else {
+                var movie = new Movie();
+                movie.title = req.body.title;
+                movie.year = req.body.year;
+                movie.genre = req.body.genre;
+                movie.actors = req.body.actors;
+                user.save(function(err){
+                    if (err) {
+                        return res.json(err);
+                    }
+                    res.json({success: true, msg: 'Successfully added movie to DB'})
+                });
+
+            }
+        }
+    )
+    .get(function(req, res) {
+            res = res.status(200);
+            res.json(
+                {status: '200', message: 'GET movies', headers: req.headers, query: req.query, env: process.env.UNIQUE_KEY});
+        }
+    )
+    .put(authJwtController.isAuthenticated, function(req, res) {
+            res = res.status(200);
+            res.json(
+                {status: '200', message: 'movie updated', headers: req.headers, query: req.query, env: process.env.UNIQUE_KEY});
+        }
+    )
+    .delete(authController.isAuthenticated, function(req, res) {
+            res = res.status(200);
+            res.json(
+                {status: '200', message: 'movie deleted', headers: req.headers, query: req.query, env: process.env.UNIQUE_KEY});
+        }
+    );
+
+// all other requests
+router.all('*', function(req, res) {
+    res.json({ error: 'HTTP Method Not Supported' });
+});
+/* ending my code */
 
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
