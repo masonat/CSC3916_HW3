@@ -126,17 +126,6 @@ router.route('/movie')
             res.json(result);
         })
         }
-    )
-    .delete(authController.isAuthenticated, function(req, res) {
-            Movie.deleteOne({title: req.body.title}, function (err, movie) {
-                if (err) {
-                    res.status(400).json({message: "ERROR: ", msg: err})
-                } else if (movie == null) { // returned null cursor
-                    res.json({msg: "Movie could not be found"})
-                } else
-                    res.json({msg: "Successfully removed movie from DB"})
-            })
-        }
     );
 // get specific movie
 router.route('/movie/:title')
@@ -156,8 +145,6 @@ router.route('/movie/:title')
             if (err) {
                 res.json({message: "ERROR: \n", error: err});
             }
-                //if (found) {
-            //  res.json({message: "Movie already exist"});
             else {
                 Movie.updateOne(conditions, req.body)
                     .then(mov => {
@@ -165,6 +152,27 @@ router.route('/movie/:title')
                             return res.status(400).end();
                         }
                         return res.status(200).json({msg: "Successfully updated movie in DB"})
+                    })
+                    .catch(err => console.log(err))
+            }
+        })
+    });
+
+// delete specific movie
+router.route('/movie/:title')
+    .delete(authController.isAuthenticated, function(req, res) {
+        var conditions = {title: req.params.title};
+        Movie.findOne({title: req.body.title}, function(err, found) {
+            if (err) {
+                res.json({message: "ERROR: \n", error: err});
+            }
+            else {
+                Movie.deleteOne(conditions, req.body)
+                    .then(mov => {
+                        if (!mov) {
+                            return res.status(400).end();
+                        }
+                        return res.status(200).json({msg: "Successfully removed movie from DB"})
                     })
                     .catch(err => console.log(err))
             }
