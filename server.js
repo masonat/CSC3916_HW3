@@ -73,16 +73,20 @@ router.post('/signin', function (req, res) {
             res.send(err);
         }
 
-        user.comparePassword(userNew.password, function(isMatch) {
-            if (isMatch) {
-                var userToken = { id: user.id, username: user.username };
-                var token = jwt.sign(userToken, process.env.SECRET_KEY);
-                res.json ({success: true, token: 'JWT ' + token});
-            }
-            else {
-                res.status(401).send({success: false, msg: 'Authentication failed.'});
-            }
-        })
+        if(user === null) {
+            res.status(404).send({success: false, msg: 'User not found!'});
+        }else {
+            user.comparePassword(userNew.password, function(isMatch) {
+                if (isMatch) {
+                    var userToken = { id: user.id, username: user.username };
+                    var token = jwt.sign(userToken, process.env.SECRET_KEY);
+                    res.json ({success: true, token: 'JWT ' + token});
+                }
+                else {
+                    res.status(401).send({success: false, msg: 'Password incorrect!'});
+                }
+            })
+        }
     })
 });
 
