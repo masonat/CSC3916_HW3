@@ -129,7 +129,7 @@ router.route('/movie')
 // get specific movie
 // delete specific movie
 router.route('/movie/:title')
-    .get(authController.isAuthenticated, function(req, res) {
+    .get(authJwtController.isAuthenticated, function(req, res) {
         Movie.find({title: req.body.title}, function (err, result) {
             if(err) res.json({message: "ERROR: ", error: err});
             res.json(result);
