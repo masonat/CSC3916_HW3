@@ -130,14 +130,15 @@ router.route('/movie')
 // get specific movie
 router.route('/movie/:movieId')
     .get(function (req, res) {
-        var id = req.params.title;
-        Movie.findOne({ title: req.body.title}, function (err, movie) {
-            if (err) res.send(err);
-            res.json(movie);
-        })
-    });
+            Movie.findOne({title: req.body.title},function (err, result) {
+                if(err) res.json({message: "ERROR: ", error: err});
+                console.log(result.title)
+                res.json(result);
+            })
+        }
+    );
 
-// PUT movie (update existing movie)
+// PUT specific movie (update existing movie)
 router.route('/movie/:movieId')
     .put(authJwtController.isAuthenticated, function (req, res) {
         var conditions = {title: req.params.title};
