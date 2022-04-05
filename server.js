@@ -101,7 +101,7 @@ router.route('/movie')
                 res.json({message: "ERROR:", error: err});
             }
             else if(found){
-                res.json({message: "Movie of same name already in DB"});
+                res.json({message: "Movie of same name already in DB", error: err});
             }
             else if (movie.actors.length !== 3){
                 res.json({message: "Less than 3 actors", error: err});
@@ -122,43 +122,20 @@ router.route('/movie')
     .get(function(req, res) {
             Movie.find(function (err, result) {
                 if(err) res.json({message: "ERROR: ", error: err});
-                console.log(result.title)
                 res.json(result);
             })
         }
     );
 // get specific movie
-router.route('/movie/:title')
-    .get(function (req, res) {
-        Movie.findOne({title: req.body.title}, function (err, movie) {
-            if (err) res.send(err);
-            res.json(movie);
-        })
-    });
-
-// PUT movie (update existing movie)
-router.route('/movie/:title')
-    .put(authJwtController.isAuthenticated, function (req, res) {
-        var conditions = {title: req.params.title};
-        Movie.findOne({title: req.body.title}, function(err, found) {
-            if (err) {
-                res.json({message: "ERROR: \n", error: err});
-            }
-            else {
-                Movie.updateOne(conditions, req.body)
-                    .then(mov => {
-                        if (!mov) {
-                            return res.status(400).end();
-                        }
-                        return res.status(200).json({msg: "Successfully updated movie in DB"})
-                    })
-                    .catch(err => console.log(err))
-            }
-        })
-    });
-
 // delete specific movie
 router.route('/movie/:title')
+    .get(authController.isAuthenticated, function(req, res) {
+        Movie.find({title: req.body.title}, function (err, result) {
+            if(err) res.json({message: "ERROR: ", error: err});
+            res.json(result);
+        })
+    })
+
     .delete(authController.isAuthenticated, function(req, res) {
         var conditions = {title: req.params.title};
         Movie.findOne({title: req.body.title}, function(err, found) {
@@ -176,7 +153,25 @@ router.route('/movie/:title')
                     .catch(err => console.log(err))
             }
         })
-    });
+    })
+    .put(authJwtController.isAuthenticated, function (req, res) {
+        var conditions = {title: req.params.title};
+        Movie.findOne({title: req.body.title}, function(err, found) {
+            if (err) {
+                res.json({message: "ERROR: \n", error: err});
+            }
+            else {
+                Movie.updateOne(conditions, req.body)
+                    .then(mov => {
+                        if (!mov) {
+                            return res.status(400).end();
+                        }
+                        return res.status(200).json({msg: "Successfully updated movie in DB"})
+                    })
+                    .catch(err => console.log(err))
+            }
+        })
+    })
 
 // all other requests
 router.all('*', function(req, res) {
