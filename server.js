@@ -128,17 +128,17 @@ router.route('/movie')
         }
     );
 // get specific movie
-router.route('/movie/:title')
+router.route('/movie/:movieId')
     .get(function (req, res) {
         var id = req.params.title;
-        Movie.findOne({ name: 'Titanic'}, function (err, movie) {
+        Movie.findOne({ title: req.body.title}, function (err, movie) {
             if (err) res.send(err);
             res.json(movie);
         })
     });
 
 // PUT movie (update existing movie)
-router.route('/movie/:title')
+router.route('/movie/:movieId')
     .put(authJwtController.isAuthenticated, function (req, res) {
         var conditions = {title: req.params.title};
         Movie.findOne({title: req.body.title}, function(err, found) {
@@ -159,7 +159,7 @@ router.route('/movie/:title')
     });
 
 // delete specific movie
-router.route('/movie/:title')
+router.route('/movie/:movieId')
     .delete(authController.isAuthenticated, function(req, res) {
         var conditions = {title: req.params.title};
         Movie.findOne({title: req.body.title}, function(err, found) {
