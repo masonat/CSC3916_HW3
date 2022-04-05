@@ -86,7 +86,6 @@ router.post('/signin', function (req, res) {
     })
 });
 
-/* starting my code for /movie */
 router.route('/movie')
     .post(authJwtController.isAuthenticated, function (req, res) {
         console.log(req.body);
@@ -126,11 +125,10 @@ router.route('/movie')
             })
         }
     );
-// get specific movie
-// delete specific movie
+
 router.route('/movie/:title')
     .get(authJwtController.isAuthenticated, function(req, res) {
-        Movie.find({title: req.body.title}, function (err, result) {
+        Movie.find({title: req.params.title}, function (err, result) {
             if(err) res.json({message: "ERROR: ", error: err});
             res.json(result);
         })
@@ -177,7 +175,6 @@ router.route('/movie/:title')
 router.all('*', function(req, res) {
     res.json({ error: 'HTTP Method Not Supported' });
 });
-/* ending my code */
 
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
