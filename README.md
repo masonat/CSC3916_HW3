@@ -1,6 +1,5 @@
 # CSC3916_HW3
 
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/1f189fc0e095b16a65a0?action=collection%2Fimport)
-
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/1f189fc0e095b16a65a0?action=collection%2Fimport#?env%5BCSCI3916_HW3%5D=W3sia2V5IjoiZWNob19ib2R5IiwidmFsdWUiOiIiLCJlbmFibGVkIjp0cnVlLCJ0eXBlIjoiZGVmYXVsdCIsInNlc3Npb25WYWx1ZSI6IiIsInNlc3Npb25JbmRleCI6MH0seyJrZXkiOiJ0b2tlbiIsInZhbHVlIjoiIiwiZW5hYmxlZCI6dHJ1ZSwidHlwZSI6ImRlZmF1bHQiLCJzZXNzaW9uVmFsdWUiOiJKV1QuLi4iLCJzZXNzaW9uSW5kZXgiOjF9LHsia2V5IjoiYmFzZUxpbmsiLCJ2YWx1ZSI6Imh0dHBzOi8vbWFzb24tY3NjLWh3My5oZXJva3VhcHAuY29tIiwiZW5hYmxlZCI6dHJ1ZSwidHlwZSI6ImRlZmF1bHQiLCJzZXNzaW9uVmFsdWUiOiJodHRwczovL21hc29uLWNzYy1odzMuaGVyb2t1YXBwLmNvbSIsInNlc3Npb25JbmRleCI6Mn1d)
 #### HW5 
 https://mason-csc-hw5.herokuapp.com/#/signin

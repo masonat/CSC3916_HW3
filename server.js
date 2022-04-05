@@ -130,8 +130,7 @@ router.route('/movie')
 // get specific movie
 router.route('/movie/:title')
     .get(function (req, res) {
-        var id = req.params.title;
-        Movie.findOne({ name: 'Titanic'}, function (err, movie) {
+        Movie.findOne({title: req.body.title}, function (err, movie) {
             if (err) res.send(err);
             res.json(movie);
         })
