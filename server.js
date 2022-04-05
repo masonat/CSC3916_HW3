@@ -120,26 +120,25 @@ router.route('/movie')
     })
     // get ALL movies
     .get(function(req, res) {
-        Movie.find(function (err, result) {
-            if(err) res.json({message: "ERROR: ", error: err});
-            console.log(result.title)
-            res.json(result);
-        })
-        }
-    );
-// get specific movie
-router.route('/movie/:movieId')
-    .get(function (req, res) {
-            Movie.findOne({title: req.body.title},function (err, result) {
+            Movie.find(function (err, result) {
                 if(err) res.json({message: "ERROR: ", error: err});
                 console.log(result.title)
                 res.json(result);
             })
         }
     );
+// get specific movie
+router.route('/movie/:title')
+    .get(function (req, res) {
+        var id = req.params.title;
+        Movie.findOne({ name: 'Titanic'}, function (err, movie) {
+            if (err) res.send(err);
+            res.json(movie);
+        })
+    });
 
-// PUT specific movie (update existing movie)
-router.route('/movie/:movieId')
+// PUT movie (update existing movie)
+router.route('/movie/:title')
     .put(authJwtController.isAuthenticated, function (req, res) {
         var conditions = {title: req.params.title};
         Movie.findOne({title: req.body.title}, function(err, found) {
@@ -160,7 +159,7 @@ router.route('/movie/:movieId')
     });
 
 // delete specific movie
-router.route('/movie/:movieId')
+router.route('/movie/:title')
     .delete(authController.isAuthenticated, function(req, res) {
         var conditions = {title: req.params.title};
         Movie.findOne({title: req.body.title}, function(err, found) {
@@ -189,5 +188,4 @@ router.all('*', function(req, res) {
 app.use('/', router);
 app.listen(process.env.PORT || 8080);
 module.exports = app; // for testing only
-
 
