@@ -1,5 +1,5 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 mongoose.Promise = global.Promise;
 
@@ -12,11 +12,11 @@ try {
 mongoose.set('useCreateIndex', true);
 
 //user schema
-var MovieSchema = new Schema({
-    title: { type: String, required: true},
-    year: { type: String, required: true},
-    genre: { type: String, required: true},
-    actors: { type: [{actorName: String, characterName: String}], required: true }
+const MovieSchema = new Schema({
+    title: {type: String, required: true},
+    year: {type: String, required: true},
+    genre: {type: String, required: true},
+    actors: {type: [{actorName: String, characterName: String}], required: true}
 });
 
 
