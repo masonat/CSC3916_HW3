@@ -6,9 +6,9 @@ mongoose.Promise = global.Promise;
 
 //mongoose.connect(process.env.DB, { useNewUrlParser: true });
 try {
-    mongoose.connect( process.env.DB, {useNewUrlParser: true, useUnifiedTopology: true}, () =>
+    mongoose.connect(process.env.DB, {useNewUrlParser: true, useUnifiedTopology: true}, () =>
         console.log("connected"));
-}catch (error) {
+} catch (error) {
     console.log("could not connect");
 }
 mongoose.set('useCreateIndex', true);
@@ -16,17 +16,17 @@ mongoose.set('useCreateIndex', true);
 //user schema
 const UserSchema = new Schema({
     name: String,
-    username: { type: String, required: true, index: { unique: true }},
-    password: { type: String, required: true, select: false }
+    email: {type: String, required: true, index: {unique: true}},
+    password: {type: String, required: true, select: false}
 });
 
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', function (next) {
     let user = this;
 
     //hash the password
     if (!user.isModified('password')) return next();
 
-    bcrypt.hash(user.password, null, null, function(err, hash) {
+    bcrypt.hash(user.password, null, null, function (err, hash) {
         if (err) return next(err);
 
         //change the password
@@ -38,7 +38,7 @@ UserSchema.pre('save', function(next) {
 UserSchema.methods.comparePassword = function (password, callback) {
     let user = this;
 
-    bcrypt.compare(password, user.password, function(err, isMatch) {
+    bcrypt.compare(password, user.password, function (err, isMatch) {
         callback(isMatch);
     })
 }
