@@ -7,21 +7,22 @@ Description: Web API scaffolding for Movie API
 const express = require('express');
 const bodyParser = require('body-parser');
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
 const authController = require('./auth');
 const authJwtController = require('./auth_jwt');
-const jwt = require('jsonwebtoken');
 const cors = require('cors');
-const User = require('./Users');
-const Movie = require("./Movies");
-
+const User = require('./models/Users');
+const Movie = require("./models/Movies");
+const PORT = process.env.PORT || 8080
 const app = express();
+
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(passport.initialize());
 
-var router = express.Router();
+const router = express.Router();
 
 
 router.post('/signup', function (req, res) {
@@ -35,7 +36,7 @@ router.post('/signup', function (req, res) {
 
         user.save(function (err) {
             if (err) {
-                if (err.code == 11000)
+                if (err.code === 11000)
                     return res.json({success: false, message: 'A user with that username already exists.'});
                 else
                     return res.json(err);
@@ -61,7 +62,10 @@ router.post('/signin', function (req, res) {
         } else {
             user.comparePassword(userNew.password, function (isMatch) {
                 if (isMatch) {
-                    var userToken = {id: user.id, username: user.username};
+                    var userToken = {
+                        id: user.id,
+                        username: user.username
+                    };
                     var token = jwt.sign(userToken, process.env.SECRET_KEY);
                     res.json({success: true, token: 'JWT ' + token});
                 } else {
@@ -102,7 +106,7 @@ router.route('/movie')
     // get ALL movies
     .get(function (req, res) {
             Movie.find(function (err, result) {
-                if (err) res.json({message: "ERROR: ", error: err});
+                if (err) res.json({message: "ERROR", error: err});
                 res.json(result);
             })
         }
@@ -111,7 +115,7 @@ router.route('/movie')
 router.route('/movie/:title')
     .get(function (req, res) {
         Movie.find({title: req.params.title}, function (err, result) {
-            if (err) res.json({message: "ERROR: ", error: err});
+            if (err) res.json({message: "ERROR", error: err});
             res.json(result);
         })
     })
@@ -157,6 +161,8 @@ router.all('*', function (req, res) {
 });
 
 app.use('/', router);
-app.listen(process.env.PORT || 8080);
+app.listen(PORT, () =>
+    console.log(`Server started on port ${PORT}`));
+
 module.exports = app; // for testing only
 

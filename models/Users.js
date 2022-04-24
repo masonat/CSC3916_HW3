@@ -7,11 +7,13 @@ mongoose.Promise = global.Promise;
 //mongoose.connect(process.env.DB, { useNewUrlParser: true });
 try {
     mongoose.connect(process.env.DB, {useNewUrlParser: true, useUnifiedTopology: true}, () =>
-        console.log("connected"));
+        console.log("Connected to MongoDB..."));
+
 } catch (error) {
-    console.log("could not connect");
+    console.log("Could not connect to MongoDB...");
 }
 mongoose.set('useCreateIndex', true);
+
 
 //user schema
 const UserSchema = new Schema({
@@ -45,3 +47,4 @@ UserSchema.methods.comparePassword = function (password, callback) {
 
 //return the model to server
 module.exports = mongoose.model('User', UserSchema);
+
